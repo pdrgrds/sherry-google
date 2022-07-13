@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="result.css">
+    <title>Search Engine</title>
+</head>
+<body>
+    
+    <div id="main">
+        <img id="logo" src="https://1000marcas.net/wp-content/uploads/2020/02/logo-Google.png" width="100" />
+        <input id="inputSearch" type="text" />
+    </div>
+
+    <hr/>
+
+    <div id="results">
+        <span class="total-results"> Página 1 de aproximadamente 4.860.000.000 resultados (0,57 seg) </span>
+        <div id="links">
+        </div>
+    </div>
+
+</body>
+
+<script>
+    let aux = document.location.href.split('?query=');
+    let query = aux[1] ? aux[1] : "";
+    document.getElementById("inputSearch").value = query;
+    fetch('http://localhost:9000/api/search?query=' + query )
+    .then(response => response.json())
+    .then(json => {
+        
+        let html = '';
+        for(let resultSearch of json){
+            html += getHtmlResultSearch(resultSearch);
+        }
+        document.getElementById("links").outerHTML = html;
+    })
+    .catch(err => console.log(err));
+
+    function getHtmlResultSearch(resultSearch){
+        return `
+            <div class="result">
+                <a href="${resultSearch.url}" target="_blank">${resultSearch.title}</a>
+                <span>${resultSearch.description}</span>
+            </div>
+        `
+    }
+</script>
+</html>
